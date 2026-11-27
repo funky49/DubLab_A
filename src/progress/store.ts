@@ -3,7 +3,7 @@ import { PARTS, TIERS, type PartId } from './parts';
 
 export type ViewMode = 'circuit' | 'knobs' | 'both' | 'schematic';
 
-export const LED_OHMS = [330, 1000, 4700] as const;
+export const LED_OHMS = [100, 330, 470, 1000] as const;
 
 export interface ProgressState {
   unlockedTiers: number[];
@@ -20,7 +20,7 @@ export const DEFAULT_PROGRESS: ProgressState = {
   unlockedTiers: [0],
   placedParts: ['audio-555', 'pitch-pot', 'trigger-btn', 'volume-pot'],
   passedQuizzes: [],
-  ledOhms: 1000,
+  ledOhms: 470,
   ledSource: 'auto',
 };
 

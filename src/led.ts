@@ -1,5 +1,6 @@
 export type LedSource = 'auto' | 'audio' | 'lfo';
 
+export const VOUT = 5;
 export const LED_VF = 2.0;
 
 export function computeLedCurrentMa(vout: number, hasResistor: boolean, ohms: number): number {
@@ -26,7 +27,7 @@ export function computeLedBrightness(
     };
   }
   const currentMa = computeLedCurrentMa(vout, true, ohms);
-  const currentScale = Math.max(0.18, Math.min(1.0, currentMa / 12));
+  const currentScale = Math.max(0.18, Math.min(1.0, currentMa / 10));
   const brightness = Math.max(0.05, Math.min(1.0, currentScale * Math.max(0.08, signal)));
   return {
     burnt: false,

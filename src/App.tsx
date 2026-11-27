@@ -7,7 +7,7 @@ import { Knob } from './components/Knob';
 import { SchematicView } from './components/SchematicView';
 import { SignalFlow } from './components/SignalFlow';
 import { TopVisualizer } from './components/TopVisualizer';
-import { computeLedBrightness } from './led';
+import { computeLedBrightness, VOUT } from './led';
 import { deriveCapabilities, type PartId } from './progress/parts';
 import {
   checkBuildUnlock,
@@ -23,7 +23,7 @@ import {
   type ViewMode,
 } from './progress/store';
 
-const VOUT_RAIL = 9;
+const VOUT_RAIL = VOUT;
 
 export const App: React.FC = () => {
   const engineRef = useRef<DubSirenEngine | null>(null);
@@ -195,7 +195,7 @@ export const App: React.FC = () => {
             </button>
           )}
           <span className={`ctx-pill ${ctxState}`} data-testid="ctx-state">
-            {ctxState}
+            {ctxState === 'uninitialized' ? 'idle' : ctxState}
           </span>
         </div>
       </header>
