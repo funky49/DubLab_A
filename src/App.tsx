@@ -4,6 +4,7 @@ import { SIREN_MODES } from './audio/modes';
 import { DEFAULT_PARAMS, PARAM_RANGES, type SirenParams, type WaveShape } from './audio/types';
 import { BuildMode } from './components/BuildMode';
 import { Knob } from './components/Knob';
+import { SchematicView } from './components/SchematicView';
 import { SignalFlow } from './components/SignalFlow';
 import { TopVisualizer } from './components/TopVisualizer';
 import { computeLedBrightness } from './led';
@@ -120,7 +121,7 @@ export const App: React.FC = () => {
   };
 
   const cycleView = () => {
-    const order: ViewMode[] = ['circuit', 'knobs', 'both'];
+    const order: ViewMode[] = ['circuit', 'knobs', 'both', 'schematic'];
     const next = order[(order.indexOf(viewMode) + 1) % order.length];
     setViewMode(next);
     saveViewMode(next);
@@ -260,6 +261,18 @@ export const App: React.FC = () => {
             </div>
             <span>{Math.round(peak * 100)}%</span>
           </div>
+
+          {viewMode === 'schematic' && (
+            <SchematicView
+              placedParts={progress.placedParts}
+              params={params}
+              gated={gated}
+              armed={ctxState === 'running'}
+              ledOhms={progress.ledOhms}
+              ledSource={progress.ledSource}
+              ledBurnt={ledInfo.burnt}
+            />
+          )}
 
           {(viewMode === 'circuit' || viewMode === 'both') && (
             <SignalFlow

@@ -1,7 +1,7 @@
 import type { LedSource } from '../led';
 import { PARTS, TIERS, type PartId } from './parts';
 
-export type ViewMode = 'circuit' | 'knobs' | 'both';
+export type ViewMode = 'circuit' | 'knobs' | 'both' | 'schematic';
 
 export const LED_OHMS = [330, 1000, 4700] as const;
 
@@ -57,7 +57,7 @@ export function saveProgress(state: ProgressState): void {
 export function loadViewMode(): ViewMode {
   try {
     const v = localStorage.getItem(VIEW_KEY);
-    if (v === 'circuit' || v === 'knobs' || v === 'both') return v;
+    if (v === 'circuit' || v === 'knobs' || v === 'both' || v === 'schematic') return v;
   } catch {
     // ignore
   }

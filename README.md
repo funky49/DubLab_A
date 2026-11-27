@@ -29,7 +29,7 @@ npm run preview
 ## Top visualizer & views
 
 - **Sticky 72 px Visualizer** (`WAVE` / `BARS` / `SPEC`): tap to cycle modes (persisted in `dublab.viz.v1`). Driven by a single dead-end master `AnalyserNode` (`fftSize 2048`).
-- **View switcher**: toggle between `Circuit`, `Knobs`, and `Both` in Play mode (persisted in `dublab.view.v1`).
+- **View switcher**: toggle between `Circuit`, `Knobs`, `Both`, and `Schematic` in Play mode (persisted in `dublab.view.v1`). Schematic grows with placed parts, shows numbered pins, formula values, and animates live signal & LED glow.
 - **LED + series resistor**: calculates current and brightness (`--led-b`), and warns if the LED is placed without a resistor.
 
 ## Progressive Build → Play loop
