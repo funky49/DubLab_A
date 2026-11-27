@@ -26,6 +26,13 @@ npm run preview
 - **Time / Feedback / Echo Vol / Tone / Echo Cut** → PT2399 wet delay loop (~50 ms–1 s)
 - **Volume** → Output level attenuator
 
+## Progressive Build → Play loop
+
+- **Level 0 (Core)**: Single NE555 square oscillator (`Pitch`, `Trigger`, `Volume`)
+- **Level 1 (LFO Sweep)**: Unlock via quiz or Level 0 build check → second NE555 (`Rate`, `Depth`, 4 siren modes) into pin 5
+- **Level 2–3**: Op-amp wave shaper (`TRI` / `SAW`) and passive RC `LPF` / `HPF`
+- **Level 4 (Stub)**: PT2399 echo upgrade (locked stub)
+
 ## Breadboard curriculum
 
 Open the **Build** tab for the offline breadboard block layout, BOM, ordered wiring steps, control-to-part mapping, bench checklist, and debug guide (also available offline at `/docs/breadboard-curriculum.md`).
