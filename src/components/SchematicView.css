@@ -1,0 +1,153 @@
+.schem-card {
+  gap: 0.45rem;
+}
+
+.schem-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.schem-zoom-group {
+  display: inline-flex;
+  gap: 0.25rem;
+  flex-wrap: wrap;
+}
+
+.schem-scroll {
+  width: 100%;
+  max-height: 62dvh;
+  overflow: auto;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: #0a100d;
+  touch-action: pan-x pan-y pinch-zoom;
+  -webkit-overflow-scrolling: touch;
+}
+
+.schem-canvas-box {
+  padding: 0.35rem;
+  transform-origin: top left;
+}
+
+.schem-svg {
+  display: block;
+  height: auto;
+}
+
+.sch-box {
+  fill: #121c17;
+  stroke: #466354;
+  stroke-width: 1.5;
+}
+
+.sch-box.ic {
+  fill: #14211b;
+  stroke: #3ecf8e;
+}
+
+.sch-box.lfo {
+  fill: #201a11;
+  stroke: #e8a54b;
+}
+
+.sch-box.opamp {
+  fill: #121d26;
+  stroke: #38bdf8;
+}
+
+.sch-title {
+  fill: var(--text);
+  font-size: 11px;
+  font-weight: 700;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+.sch-label {
+  fill: #c7d8cf;
+  font-size: 10px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+.sch-pin {
+  fill: #98b0a3;
+  font-size: 8.8px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+.sch-note {
+  fill: #8ea699;
+  font-size: 9px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+.sch-pwr {
+  fill: #ff7b70;
+  font-size: 10px;
+  font-weight: 700;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+.sch-warn {
+  fill: #ff5d52;
+  font-size: 10px;
+  font-weight: 800;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+.sw {
+  fill: none;
+  stroke: #486153;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.sw.pwr {
+  stroke: #d95d53;
+}
+
+.sw.gnd {
+  stroke: #5da9e9;
+}
+
+.sw.live {
+  stroke: #e8a54b;
+  stroke-width: 2;
+  stroke-dasharray: 6 4;
+  animation: sch-flow 0.65s linear infinite;
+}
+
+.sw.live.cv {
+  stroke: #3ecf8e;
+}
+
+.sw.live.blue {
+  stroke: #38bdf8;
+}
+
+.sch-led-bulb {
+  fill: rgba(255, 75, 62, calc(0.18 + var(--led-b, 0.15) * 0.82));
+  stroke: #ff7b70;
+  stroke-width: 1.6;
+}
+
+.sch-led-bulb.burnt {
+  fill: #241010;
+  stroke: #ff4b3e;
+  stroke-dasharray: 3 2;
+}
+
+.sch-led-rays {
+  stroke: #ff7b70;
+  stroke-width: 1.4;
+  opacity: var(--led-b, 0.15);
+}
+
+@keyframes sch-flow {
+  to {
+    stroke-dashoffset: -20;
+  }
+}
