@@ -1,22 +1,32 @@
+import type { LedSource } from '../led';
 import { PARTS, TIERS, type PartId } from './parts';
+
+export type ViewMode = 'circuit' | 'knobs' | 'both';
+
+export const LED_OHMS = [330, 1000, 4700] as const;
 
 export interface ProgressState {
   unlockedTiers: number[];
   placedParts: PartId[];
   passedQuizzes: string[];
+  ledOhms: number;
+  ledSource: LedSource;
 }
 
-const STORAGE_KEY = 'dublab.progress.v1';
+const PROGRESS_KEY = 'dublab.progress.v1';
+const VIEW_KEY = 'dublab.view.v1';
 
 export const DEFAULT_PROGRESS: ProgressState = {
   unlockedTiers: [0],
   placedParts: ['audio-555', 'pitch-pot', 'trigger-btn', 'volume-pot'],
   passedQuizzes: [],
+  ledOhms: 1000,
+  ledSource: 'auto',
 };
 
 export function loadProgress(): ProgressState {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
+    const raw = localStorage.getItem(PROGRESS_KEY);
     if (!raw) return { ...DEFAULT_PROGRESS };
     const parsed = JSON.parse(raw) as Partial<ProgressState>;
     return {
@@ -25,6 +35,11 @@ export function loadProgress(): ProgressState {
         ? (parsed.placedParts as PartId[])
         : [...DEFAULT_PROGRESS.placedParts],
       passedQuizzes: Array.isArray(parsed.passedQuizzes) ? parsed.passedQuizzes : [],
+      ledOhms: typeof parsed.ledOhms === 'number' ? parsed.ledOhms : DEFAULT_PROGRESS.ledOhms,
+      ledSource:
+        parsed.ledSource === 'auto' || parsed.ledSource === 'audio' || parsed.ledSource === 'lfo'
+          ? parsed.ledSource
+          : 'auto',
     };
   } catch {
     return { ...DEFAULT_PROGRESS };
@@ -33,9 +48,27 @@ export function loadProgress(): ProgressState {
 
 export function saveProgress(state: ProgressState): void {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    localStorage.setItem(PROGRESS_KEY, JSON.stringify(state));
   } catch {
-    // Ignore storage quota errors
+    // ignore
+  }
+}
+
+export function loadViewMode(): ViewMode {
+  try {
+    const v = localStorage.getItem(VIEW_KEY);
+    if (v === 'circuit' || v === 'knobs' || v === 'both') return v;
+  } catch {
+    // ignore
+  }
+  return 'both';
+}
+
+export function saveViewMode(view: ViewMode): void {
+  try {
+    localStorage.setItem(VIEW_KEY, view);
+  } catch {
+    // ignore
   }
 }
 
@@ -57,7 +90,6 @@ export function canPlacePart(state: ProgressState, partId: PartId): { ok: boolea
 export function togglePlacedPart(state: ProgressState, partId: PartId): ProgressState {
   const exists = state.placedParts.includes(partId);
   if (exists) {
-    // Also remove parts that depend on this part
     const toRemove = new Set<PartId>([partId]);
     let changed = true;
     while (changed) {
@@ -131,6 +163,18 @@ export function unlockTierViaQuiz(state: ProgressState, quizId: string, tier: nu
   return next;
 }
 
+export function updateLedConfig(
+  state: ProgressState,
+  patch: Partial<Pick<ProgressState, 'ledOhms' | 'ledSource'>>,
+): ProgressState {
+  const next: ProgressState = {
+    ...state,
+    ...patch,
+  };
+  saveProgress(next);
+  return next;
+}
+
 export function clearBoardParts(state: ProgressState): ProgressState {
   const next: ProgressState = {
     ...state,
@@ -145,6 +189,8 @@ export function resetAllProgress(): ProgressState {
     unlockedTiers: [0],
     placedParts: [],
     passedQuizzes: [],
+    ledOhms: DEFAULT_PROGRESS.ledOhms,
+    ledSource: DEFAULT_PROGRESS.ledSource,
   };
   saveProgress(next);
   return next;

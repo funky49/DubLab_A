@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
+import { computeLedBrightness, type LedSource } from '../led';
 import { PARTS, TIERS, type PartId } from '../progress/parts';
-import { canPlacePart, type ProgressState } from '../progress/store';
+import { canPlacePart, LED_OHMS, type ProgressState } from '../progress/store';
 import { CurriculumView } from './CurriculumView';
 import { QuizPanel } from './QuizPanel';
 
 interface BuildModeProps {
   progress: ProgressState;
+  vout: number;
   onTogglePart: (id: PartId) => void;
+  onLedConfig: (patch: Partial<Pick<ProgressState, 'ledOhms' | 'ledSource'>>) => void;
   onCheckBuild: () => void;
   onUnlockQuiz: (quizId: string, tier: number) => void;
   onClearBoard: () => void;
@@ -17,7 +20,9 @@ interface BuildModeProps {
 
 export const BuildMode: React.FC<BuildModeProps> = ({
   progress,
+  vout,
   onTogglePart,
+  onLedConfig,
   onCheckBuild,
   onUnlockQuiz,
   onClearBoard,
@@ -32,6 +37,10 @@ export const BuildMode: React.FC<BuildModeProps> = ({
   const coreCount = ['audio-555', 'pitch-pot', 'trigger-btn', 'volume-pot'].filter((id) =>
     progress.placedParts.includes(id as PartId),
   ).length;
+
+  const hasLed = progress.placedParts.includes('led');
+  const hasLedR = progress.placedParts.includes('led-resistor');
+  const ledInfo = computeLedBrightness(vout, hasLed, hasLedR, progress.ledOhms, 0.85);
 
   return (
     <div className="build-stack" data-testid="build-mode">
@@ -102,23 +111,80 @@ export const BuildMode: React.FC<BuildModeProps> = ({
           {PARTS.filter((p) => progress.unlockedTiers.includes(p.tier)).map((part) => {
             const placed = progress.placedParts.includes(part.id);
             const check = canPlacePart(progress, part.id);
+            const isBurntLed = part.id === 'led' && hasLed && !hasLedR;
             return (
               <button
                 key={part.id}
                 type="button"
                 data-testid={`board-part-${part.id}`}
-                className={`part-slot ${placed ? 'placed' : 'empty'} ${!placed && !check.ok ? 'blocked' : ''}`}
+                className={`part-slot ${placed ? 'placed' : 'empty'} ${!placed && !check.ok ? 'blocked' : ''} ${isBurntLed ? 'burnt' : ''}`}
                 onClick={() => onTogglePart(part.id)}
               >
                 <div className="part-slot-top">
                   <strong>{part.name}</strong>
-                  <span className="part-badge">{placed ? 'PLACED' : 'TAP TO ADD'}</span>
+                  <span className="part-badge">
+                    {isBurntLed ? 'BURNT!' : placed ? 'PLACED' : 'TAP TO ADD'}
+                  </span>
                 </div>
-                <small>{placed ? part.enables : check.ok ? part.chipNote : check.reason}</small>
+                <small>
+                  {isBurntLed
+                    ? `No series R! ${vout}V burns LED — add LED Series Resistor.`
+                    : placed
+                      ? part.enables
+                      : check.ok
+                        ? part.chipNote
+                        : check.reason}
+                </small>
               </button>
             );
           })}
         </div>
+
+        {hasLed && (
+          <div className="led-config-box" data-testid="led-config">
+            <div className="panel-head">
+              <span className="panel-title">LED Indicator ({ledInfo.label})</span>
+              <span
+                className={`led-preview-dot ${ledInfo.burnt ? 'burnt' : ''}`}
+                data-testid="led-status"
+                data-burnt={ledInfo.burnt ? 'true' : 'false'}
+              />
+            </div>
+            {ledInfo.burnt && (
+              <div className="audio-error" data-testid="led-burnt-warning">
+                LED burnt! Never wire an LED to {vout} V without a series resistor.
+              </div>
+            )}
+            <div className="led-row">
+              <span className="led-sub">Series R:</span>
+              {LED_OHMS.map((ohms) => (
+                <button
+                  key={ohms}
+                  type="button"
+                  data-testid={`led-ohms-${ohms}`}
+                  className={`mini-btn ${progress.ledOhms === ohms ? 'accent' : ''}`}
+                  onClick={() => onLedConfig({ ledOhms: ohms })}
+                >
+                  {ohms >= 1000 ? `${ohms / 1000}kΩ` : `${ohms}Ω`}
+                </button>
+              ))}
+            </div>
+            <div className="led-row">
+              <span className="led-sub">Source:</span>
+              {(['auto', 'audio', 'lfo'] as LedSource[]).map((src) => (
+                <button
+                  key={src}
+                  type="button"
+                  data-testid={`led-src-${src}`}
+                  className={`mini-btn ${progress.ledSource === src ? 'accent' : ''}`}
+                  onClick={() => onLedConfig({ ledSource: src })}
+                >
+                  {src.toUpperCase()}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
       </section>
 
       <section className="panel-card">
@@ -165,7 +231,7 @@ export const BuildMode: React.FC<BuildModeProps> = ({
         data-testid="toggle-curriculum"
       >
         <span>{showDocs ? 'Hide Breadboard Docs' : 'Show Breadboard Curriculum (BOM · Layout · Wiring)'}</span>
-        <small>sound-system.fr +5V guide</small>
+        <small>sound-system.fr guide</small>
       </button>
 
       {showDocs && <CurriculumView />}

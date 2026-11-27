@@ -5,6 +5,8 @@ export type PartId =
   | 'pitch-pot'
   | 'trigger-btn'
   | 'volume-pot'
+  | 'led'
+  | 'led-resistor'
   | 'lfo-555'
   | 'rate-pot'
   | 'depth-pot'
@@ -13,7 +15,7 @@ export type PartId =
   | 'hpf-rc'
   | 'pt2399-echo';
 
-export type PartKind = 'ic' | 'pot' | 'switch' | 'filter' | 'echo';
+export type PartKind = 'ic' | 'pot' | 'switch' | 'indicator' | 'resistor' | 'filter' | 'echo';
 
 export interface PartDef {
   id: PartId;
@@ -75,6 +77,26 @@ export const PARTS: PartDef[] = [
     needs: ['audio-555'],
     enables: 'Line-level output attenuator',
     chipNote: '10 kΩ output divider after 10 µF',
+  },
+  {
+    id: 'led',
+    name: 'Indicator LED',
+    shortName: 'LED',
+    tier: 0,
+    kind: 'indicator',
+    needs: ['audio-555'],
+    enables: 'Visual pulse indicator (needs series R!)',
+    chipNote: 'Red LED Vf ≈ 2.0 V',
+  },
+  {
+    id: 'led-resistor',
+    name: 'LED Series Resistor',
+    shortName: 'LED R',
+    tier: 0,
+    kind: 'resistor',
+    needs: ['led'],
+    enables: 'Current limiter — protects LED from burning',
+    chipNote: 'Limits LED current I = (Vcc − 2V) / R',
   },
   {
     id: 'lfo-555',
@@ -152,7 +174,7 @@ export const TIERS: TierDef[] = [
   {
     tier: 0,
     title: 'Level 0: Core 555',
-    subtitle: 'Bare NE555 square oscillator + Pitch, Trigger, Volume',
+    subtitle: 'Bare NE555 square oscillator + Pitch, Trigger, Volume (+ optional LED)',
     buildRequirement: ['audio-555', 'pitch-pot', 'trigger-btn', 'volume-pot'],
   },
   {

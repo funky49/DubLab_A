@@ -26,6 +26,12 @@ npm run preview
 - **Time / Feedback / Echo Vol / Tone / Echo Cut** → PT2399 wet delay loop (~50 ms–1 s)
 - **Volume** → Output level attenuator
 
+## Top visualizer & views
+
+- **Sticky 72 px Visualizer** (`WAVE` / `BARS` / `SPEC`): tap to cycle modes (persisted in `dublab.viz.v1`). Driven by a single dead-end master `AnalyserNode` (`fftSize 2048`).
+- **View switcher**: toggle between `Circuit`, `Knobs`, and `Both` in Play mode (persisted in `dublab.view.v1`).
+- **LED + series resistor**: calculates current and brightness (`--led-b`), and warns if the LED is placed without a resistor.
+
 ## Progressive Build → Play loop
 
 - **Level 0 (Core)**: Single NE555 square oscillator (`Pitch`, `Trigger`, `Volume`)
