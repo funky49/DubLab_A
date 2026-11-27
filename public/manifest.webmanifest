@@ -1,0 +1,18 @@
+{
+  "name": "DubLab — 555 + PT2399 Dub Siren",
+  "short_name": "DubLab",
+  "description": "Offline-capable NE555 + PT2399 dub siren teaching instrument for electronics students.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0b100e",
+  "theme_color": "#0b100e",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/icons/dublab-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
