@@ -26,6 +26,10 @@ npm run preview
 - **Time / Feedback / Echo Vol / Tone / Echo Cut** → PT2399 wet delay loop (~50 ms–1 s)
 - **Volume** → Output level attenuator
 
+## Breadboard curriculum
+
+Open the **Build** tab for the offline breadboard block layout, BOM, ordered wiring steps, control-to-part mapping, bench checklist, and debug guide (also available offline at `/docs/breadboard-curriculum.md`).
+
 ## Signal flow view
 
 The live circuit diagram sits above the controls and mirrors the hardware path:

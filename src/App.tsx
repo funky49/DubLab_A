@@ -3,6 +3,7 @@ import { DubSirenEngine } from './audio/DubSirenEngine';
 import { SIREN_MODES } from './audio/modes';
 import { DEFAULT_PARAMS, PARAM_RANGES, type SirenParams } from './audio/types';
 import { Knob } from './components/Knob';
+import { CurriculumView } from './components/CurriculumView';
 import { SignalFlow } from './components/SignalFlow';
 
 export const App: React.FC = () => {
@@ -19,6 +20,7 @@ export const App: React.FC = () => {
   const [peak, setPeak] = useState(0);
   const [lfoLevel, setLfoLevel] = useState(0.5);
   const [lastTouched, setLastTouched] = useState<string | null>(null);
+  const [tab, setTab] = useState<'play' | 'build'>('play');
 
   useEffect(() => {
     engine.onStateChange((state, err) => {
@@ -82,12 +84,36 @@ export const App: React.FC = () => {
           <span className="brand-sub">NE555×2 + PT2399</span>
         </div>
         <div className="status-row">
+          <div className="seg-tabs" role="tablist">
+            <button
+              type="button"
+              role="tab"
+              aria-selected={tab === 'play'}
+              className={`seg-tab ${tab === 'play' ? 'active' : ''}`}
+              onClick={() => setTab('play')}
+            >
+              Play
+            </button>
+            <button
+              type="button"
+              role="tab"
+              aria-selected={tab === 'build'}
+              className={`seg-tab ${tab === 'build' ? 'active' : ''}`}
+              onClick={() => setTab('build')}
+            >
+              Build
+            </button>
+          </div>
           <span className={`ctx-pill ${ctxState}`} data-testid="ctx-state">
             {ctxState}
           </span>
         </div>
       </header>
 
+      {tab === 'build' ? (
+        <CurriculumView />
+      ) : (
+        <>
       <button
         type="button"
         data-testid="play-banner"
@@ -312,6 +338,8 @@ export const App: React.FC = () => {
           <small>Mute Wet Feedback Only</small>
         </button>
       </section>
+        </>
+      )}
     </div>
   );
 };

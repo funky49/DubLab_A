@@ -458,3 +458,140 @@ body {
   }
 }
 
+.seg-tabs {
+  display: inline-flex;
+  background: var(--bg1);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 2px;
+  gap: 2px;
+}
+
+.seg-tab {
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.28rem 0.65rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.seg-tab.active {
+  background: #1d2c24;
+  color: var(--text);
+}
+
+.panel-link {
+  font-size: 0.7rem;
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.breadboard-wrap {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.breadboard-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.bb-rail-pos {
+  fill: #ff7b70;
+  font-size: 7.5px;
+  font-weight: 700;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+.bb-rail-gnd {
+  fill: #7dc4ff;
+  font-size: 7.5px;
+  font-weight: 700;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+.bb-chip-title {
+  fill: var(--text);
+  font-size: 9px;
+  font-weight: 700;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+.bb-chip-sub {
+  fill: var(--muted);
+  font-size: 7.4px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+.curric-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.curric-note {
+  margin: 0;
+  font-size: 0.74rem;
+  line-height: 1.4;
+  color: var(--muted);
+}
+
+.curric-note code {
+  color: var(--accent);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+.curric-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.curric-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.72rem;
+}
+
+.curric-table th,
+.curric-table td {
+  padding: 0.4rem 0.45rem;
+  text-align: left;
+  border-bottom: 1px solid var(--line);
+  vertical-align: top;
+}
+
+.curric-table th {
+  color: var(--muted);
+  font-weight: 700;
+  background: #0e1512;
+}
+
+.curric-step-card {
+  padding: 0.5rem 0.6rem;
+  border-radius: 8px;
+  background: #0e1512;
+  border: 1px solid var(--line);
+}
+
+.curric-step-title {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 0.25rem;
+}
+
+.curric-list {
+  margin: 0;
+  padding-left: 1.1rem;
+  font-size: 0.73rem;
+  line-height: 1.4;
+  color: var(--text);
+}
+
+
