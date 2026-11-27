@@ -349,3 +349,112 @@ body {
   opacity: 0;
   pointer-events: none;
 }
+
+.flow-card {
+  gap: 0.35rem;
+}
+
+.flow-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  background: #0b110e;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.flow-node {
+  fill: #131d18;
+  stroke: #2e4238;
+  stroke-width: 1.4;
+  transition: stroke 140ms ease, fill 140ms ease;
+}
+
+.flow-node.active.audio,
+.flow-node.active.gate,
+.flow-node.active {
+  fill: #152920;
+  stroke: #3ecf8e;
+}
+
+.flow-node.active.lfo {
+  fill: #271f13;
+  stroke: #e8a54b;
+}
+
+.flow-node.active.echo {
+  fill: #122330;
+  stroke: #38bdf8;
+}
+
+.flow-node.cut {
+  stroke: #ff4b3e;
+  stroke-dasharray: 4 3;
+}
+
+.flow-node.burnt {
+  fill: #2a1414;
+  stroke: #ff4b3e;
+}
+
+.flow-node.locked {
+  fill: #0f1613;
+  stroke: #223029;
+  stroke-dasharray: 4 4;
+}
+
+.flow-node.focused {
+  stroke-width: 2.3;
+  filter: drop-shadow(0 0 4px rgba(62, 207, 142, 0.35));
+}
+
+.flow-node-title {
+  fill: var(--text);
+  font-size: 9.5px;
+  font-weight: 700;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+.flow-node-sub {
+  fill: var(--muted);
+  font-size: 8px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+.flow-edge-label {
+  fill: var(--muted);
+  font-size: 7.5px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+.flow-wire {
+  stroke: #3a4f44;
+  stroke-width: 1.8;
+  stroke-dasharray: 5 4;
+}
+
+.flow-wire.green.live {
+  stroke: #3ecf8e;
+  animation: flow-dash 0.55s linear infinite;
+}
+
+.flow-wire.amber.live {
+  stroke: #e8a54b;
+  animation: flow-dash 0.65s linear infinite;
+}
+
+.flow-wire.blue.live {
+  stroke: #38bdf8;
+  animation: flow-dash 0.7s linear infinite;
+}
+
+.flow-wire.focused {
+  stroke-width: 2.6;
+}
+
+@keyframes flow-dash {
+  to {
+    stroke-dashoffset: -18;
+  }
+}
+

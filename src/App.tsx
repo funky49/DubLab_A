@@ -3,6 +3,7 @@ import { DubSirenEngine } from './audio/DubSirenEngine';
 import { SIREN_MODES } from './audio/modes';
 import { DEFAULT_PARAMS, PARAM_RANGES, type SirenParams } from './audio/types';
 import { Knob } from './components/Knob';
+import { SignalFlow } from './components/SignalFlow';
 
 export const App: React.FC = () => {
   const engineRef = useRef<DubSirenEngine | null>(null);
@@ -16,6 +17,8 @@ export const App: React.FC = () => {
   const [ctxState, setCtxState] = useState<AudioContextState | 'uninitialized'>('uninitialized');
   const [audioErr, setAudioErr] = useState<string | null>(null);
   const [peak, setPeak] = useState(0);
+  const [lfoLevel, setLfoLevel] = useState(0.5);
+  const [lastTouched, setLastTouched] = useState<string | null>(null);
 
   useEffect(() => {
     engine.onStateChange((state, err) => {
@@ -31,6 +34,7 @@ export const App: React.FC = () => {
     let raf = 0;
     const tick = () => {
       setPeak(engine.getOutputPeak());
+      setLfoLevel(engine.getLfoLevel());
       raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
@@ -120,6 +124,13 @@ export const App: React.FC = () => {
         <span>{Math.round(peak * 100)}%</span>
       </div>
 
+      <SignalFlow
+        params={params}
+        gated={gated}
+        lfoLevel={lfoLevel}
+        lastTouched={lastTouched}
+      />
+
       <section className="panel-card">
         <div className="panel-head">
           <span className="panel-title">555 Oscillator &amp; LFO</span>
@@ -135,6 +146,7 @@ export const App: React.FC = () => {
             max={PARAM_RANGES.pitchHz.max}
             step={1}
             format={(v) => `${Math.round(v)}Hz`}
+            onTouchControl={setLastTouched}
             onChange={(v) => updateParam('pitchHz', v)}
           />
           <Knob
@@ -147,6 +159,7 @@ export const App: React.FC = () => {
             step={0.1}
             unit="Hz"
             accent="var(--amber)"
+            onTouchControl={setLastTouched}
             onChange={(v) => updateParam('lfoRateHz', v)}
           />
           <Knob
@@ -159,6 +172,7 @@ export const App: React.FC = () => {
             step={0.01}
             format={(v) => `${Math.round(v * 100)}%`}
             accent="var(--amber)"
+            onTouchControl={setLastTouched}
             onChange={(v) => updateParam('lfoDepth', v)}
           />
           <Knob
@@ -170,6 +184,7 @@ export const App: React.FC = () => {
             max={1}
             step={0.01}
             format={(v) => `${Math.round(v * 100)}%`}
+            onTouchControl={setLastTouched}
             onChange={(v) => updateParam('volume', v)}
           />
         </div>
@@ -180,7 +195,10 @@ export const App: React.FC = () => {
               key={m.id}
               type="button"
               className={`chip-btn ${params.mode === m.id ? 'active' : ''}`}
-              onClick={() => updateParam('mode', m.id)}
+              onClick={() => {
+                setLastTouched('mode');
+                updateParam('mode', m.id);
+              }}
             >
               <span>{m.label}</span>
               <small>{m.chipHint}</small>
@@ -193,7 +211,10 @@ export const App: React.FC = () => {
             type="button"
             className={`trigger-btn ${gated ? 'gated' : ''}`}
             data-testid="trigger-btn"
-            onPointerDown={handleTriggerDown}
+            onPointerDown={() => {
+              setLastTouched('trigger');
+              handleTriggerDown();
+            }}
             onPointerUp={handleTriggerUp}
             onPointerCancel={handleTriggerUp}
           >
@@ -236,6 +257,7 @@ export const App: React.FC = () => {
             step={5}
             format={(v) => `${Math.round(v)}ms`}
             accent="var(--blue)"
+            onTouchControl={setLastTouched}
             onChange={(v) => updateParam('echoTimeMs', v)}
           />
           <Knob
@@ -248,6 +270,7 @@ export const App: React.FC = () => {
             step={0.01}
             format={(v) => `${Math.round(v * 100)}%`}
             accent="var(--blue)"
+            onTouchControl={setLastTouched}
             onChange={(v) => updateParam('echoFeedback', v)}
           />
           <Knob
@@ -260,6 +283,7 @@ export const App: React.FC = () => {
             step={0.01}
             format={(v) => `${Math.round(v * 100)}%`}
             accent="var(--blue)"
+            onTouchControl={setLastTouched}
             onChange={(v) => updateParam('echoWet', v)}
           />
           <Knob
@@ -272,13 +296,17 @@ export const App: React.FC = () => {
             step={10}
             format={(v) => (v >= 1000 ? `${(v / 1000).toFixed(1)}k` : `${Math.round(v)}`)}
             accent="var(--blue)"
+            onTouchControl={setLastTouched}
             onChange={(v) => updateParam('echoToneHz', v)}
           />
         </div>
         <button
           type="button"
           className={`chip-btn warn ${params.echoCut ? 'active' : ''}`}
-          onClick={() => updateParam('echoCut', !params.echoCut)}
+          onClick={() => {
+            setLastTouched('echoCut');
+            updateParam('echoCut', !params.echoCut);
+          }}
         >
           <span>{params.echoCut ? 'ECHO CUT: MUTED' : 'ECHO CUT'}</span>
           <small>Mute Wet Feedback Only</small>
